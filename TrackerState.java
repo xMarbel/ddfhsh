@@ -42,7 +42,9 @@ public final class TrackerState {
         public Map<String, Entry> tracked = new LinkedHashMap<>();
         public boolean enabled = true, throughWalls = true, rainbow = false, alerts = true;
         public boolean hud = true, hudHealth = true, hudDistance = true;
-        public int thickness = 2, style = 0, origin = 0, maxDistIdx = 4, opacityIdx = 3, hudCorner = 0;
+        public int thickness = 1, style = 1, origin = 0, maxDistIdx = 4, opacityIdx = 3, hudCorner = 0;
+        public int defaultColor = 2; // kolor linii do graczy spoza listy (indeks w COLORS) - 2 = niebieski
+        public int ver = 3;
         public int mode = 1; // 0 = tylko obserwowani, 1 = wszyscy gracze (obserwowani w swoich kolorach)
         public boolean glow = true;        // globalny włącznik czerwonego glowingu
         public boolean lowHp = true;       // tracer do każdego gracza z małą ilością serc
@@ -66,9 +68,13 @@ public final class TrackerState {
     public static void load() {
         try {
             if (!Files.exists(file())) return;
-            Config c = GSON.fromJson(Files.readString(file()), Config.class);
+            String txt = Files.readString(file());
+            Config c = GSON.fromJson(txt, Config.class);
             if (c == null) return;
             if (c.tracked == null) c.tracked = new LinkedHashMap<>();
+            if (!txt.contains("\"ver\"")) { // stary plik: nowy, cienki niebieski wyglad
+                c.style = 1; c.thickness = 1; c.defaultColor = 2; c.ver = 3;
+            }
             C = c;
         } catch (Exception ignored) { }
     }

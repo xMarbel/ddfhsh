@@ -92,7 +92,8 @@ public final class TracerRenderer {
             if (!show) continue;
             if (limit > 0 && p.distanceTo(mc.player) > limit) continue;
 
-            int rgb = e != null ? TrackerState.rgb(name) : (low ? lowColor : 0xFFFFFF);
+            int rgb = e != null ? TrackerState.rgb(name)
+                    : (low ? lowColor : TrackerState.COLORS[Math.floorMod(c.defaultColor, TrackerState.COLORS.length)]);
             targets.add(new Target(p, rgb));
         }
         if (targets.isEmpty()) return;

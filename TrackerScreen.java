@@ -246,14 +246,16 @@ public class TrackerScreen extends Screen {
         grid(1, 1, 1, "HUD – dystans: " + onoff(c.hudDistance), ACCENT, () -> { c.hudDistance = !c.hudDistance; saveRebuild(); });
         grid(2, 0, 2, "Alerty (dołączył / wyszedł / w zasięgu): " + onoff(c.alerts), GOLD,
                 () -> { c.alerts = !c.alerts; saveRebuild(); });
-        grid(3, 0, 1, "Reset ustawień", GRAY, () -> {
+        grid(3, 0, 2, "Kolor tracerów (inni gracze): §f" + TrackerState.COLOR_NAMES[Math.floorMod(c.defaultColor, TrackerState.COLORS.length)], ACCENT,
+                () -> { c.defaultColor = (c.defaultColor + 1) % TrackerState.COLORS.length; saveRebuild(); });
+        grid(4, 0, 1, "Reset ustawień", GRAY, () -> {
             TrackerState.Config n = new TrackerState.Config();
             n.tracked = c.tracked;
             TrackerState.C = n;
             say("Przywrócono domyślne ustawienia.", 0xFFAA00);
             saveRebuild();
         });
-        grid(3, 1, 1, "Wyczyść listę", RED, () -> {
+        grid(4, 1, 1, "Wyczyść listę", RED, () -> {
             c.tracked.clear();
             say("Wyczyszczono listę obserwowanych.", 0xFF5555);
             saveRebuild();
@@ -375,7 +377,7 @@ public class TrackerScreen extends Screen {
             case TRACERS -> hint(ctx, py + 58 + 7 * 26 + 2,
                     "Klawisz H – śledź / przestań śledzić gracza na celowniku.",
                     "Gracze z małą ilością serc dostają tracer automatycznie (pulsuje).");
-            case SETTINGS -> hint(ctx, py + 58 + 5 * 26 + 4,
+            case SETTINGS -> hint(ctx, py + 58 + 5 * 26 + 8,
                     "Alerty działają dla graczy z Twojej listy obserwowanych.",
                     "Lista i ustawienia zapisują się automatycznie.");
         }
