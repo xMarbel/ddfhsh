@@ -71,6 +71,14 @@ public final class TracerRenderer {
         } catch (Throwable ignored) { }
     }
 
+    private static boolean viewAlreadyApplied() {
+        try {
+            return !RenderSystem.getModelViewStack().equals(new Matrix4f(), 1e-4f);
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
     private static void draw(WorldRenderContext ctx) {
         TrackerState.Config c = TrackerState.C;
         if (!c.enabled) return;
@@ -107,7 +115,11 @@ public final class TracerRenderer {
 
         // WŁASNA macierz widoku (obrót kamery) - nie zależy od tego, co podaje WorldRenderContext
         // (w nowszych wersjach matrixStack z kontekstu bywa pusty/null i wtedy linie znikały).
-        Matrix4f mat = new Matrix4f().rotation(camera.getRotation().conjugate(new Quaternionf()));
+        // W niektórych wersjach (1.21.2+) obrót kamery jest już w macierzy modelu/widoku renderera;
+        // wtedy wierzchołki dajemy z macierzą jednostkową, inaczej obrót zostałby dodany drugi raz.
+        Matrix4f mat = viewAlreadyApplied()
+                ? new Matrix4f()
+                : new Matrix4f().rotation(camera.getRotation().conjugate(new Quaternionf()));
         int alpha = (int) (255 * (TrackerState.OPACITY[c.opacityIdx] / 100f));
 
         RenderSystem.enableBlend();
