@@ -7,6 +7,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Ułóż strukturę projektu
+        run: |
+          mkdir -p src/main/java/pl/playertracker
+          mkdir -p src/main/resources/assets/playertracker/lang
+          mv -f *.java src/main/java/pl/playertracker/
+          mv -f fabric.mod.json src/main/resources/
+          mv -f en_us.json src/main/resources/assets/playertracker/lang/
+          find src -type f
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
